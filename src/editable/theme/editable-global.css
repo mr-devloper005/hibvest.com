@@ -12,6 +12,10 @@
 */
 
 body {
+  --editable-container: 1180px;
+  --editable-border: #12156f22;
+  --editable-page-bg: var(--slot4-page-bg);
+  --editable-page-text: var(--slot4-page-text);
   background-color: var(--slot4-page-bg) !important;
   color: var(--slot4-page-text) !important;
   background-image: var(--slot4-body-gradient) !important;
