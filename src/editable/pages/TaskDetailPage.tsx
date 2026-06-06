@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import type { CSSProperties } from 'react'
 import { notFound } from 'next/navigation'
-import { ArrowLeft, Bookmark, Building2, Camera, CheckCircle2, Download, ExternalLink, FileText, Globe2, Mail, MapPin, MessageCircle, Phone, Tag, UserRound } from 'lucide-react'
+import { ArrowLeft, BadgeCheck, Bookmark, Building2, Camera, CheckCircle2, Download, ExternalLink, FileText, Globe2, Mail, MapPin, MessageCircle, Navigation, Phone, Send, Tag, UserRound } from 'lucide-react'
 import { buildPostMetadata, buildTaskMetadata } from '@/lib/seo'
 import { buildPostUrl, fetchArticleComments, fetchTaskPostBySlug, fetchTaskPosts } from '@/lib/task-data'
 import { getTaskConfig, SITE_CONFIG, type TaskKey } from '@/lib/site-config'
@@ -157,30 +157,79 @@ function ListingDetail({ post, related }: { post: SitePost; related: SitePost[] 
   const email = getField(post, ['email'])
   const website = getField(post, ['website', 'url'])
   const mapSrc = mapSrcFor(post)
+  const category = categoryOf(post, 'Business service')
+  const hours = getField(post, ['hours', 'workingHours', 'availability']) || 'Open by appointment'
+  const price = getField(post, ['price', 'budget', 'rate']) || 'Request quote'
+  const directionsHref = address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}` : '#'
+  const applyHref = email ? `mailto:${email}?subject=${encodeURIComponent(`Inquiry for ${post.title}`)}` : phone ? `tel:${phone}` : website || '#'
   return (
-    <section className="mx-auto max-w-[var(--editable-container)] px-4 py-10 sm:px-6 lg:px-8 lg:py-16">
-      <BackLink task="listing" />
-      <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_420px]">
-        <article className="rounded-[2.8rem] border border-[var(--editable-border)] bg-white p-6 shadow-[0_30px_90px_rgba(15,23,42,0.09)] sm:p-9">
-          <div className="grid gap-6 sm:grid-cols-[150px_1fr]">
-            <div className="flex h-36 w-36 items-center justify-center overflow-hidden rounded-[2rem] bg-[var(--detail-bg)] ring-1 ring-[var(--editable-border)]">
-              {logo ? <img src={logo} alt="" className="h-full w-full object-cover" /> : <Building2 className="h-14 w-14 opacity-40" />}
+    <section className="bg-white text-[#12156f]">
+      <div className="bg-[#f3f0fa]">
+        <div className="mx-auto max-w-[1180px] px-4 py-12 text-center sm:px-6 lg:px-8">
+          <BackLink task="listing" />
+          <div className="mx-auto mt-8 flex h-24 w-24 items-center justify-center overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-[#12156f18]">
+            {logo ? <img src={logo} alt="" className="h-full w-full object-cover" /> : <Building2 className="h-12 w-12 opacity-45" />}
+          </div>
+          <p className="mt-6 text-xs font-black uppercase tracking-[0.28em] text-[#ffb52e]">Business listing</p>
+          <h1 className="mx-auto mt-3 max-w-3xl text-4xl font-light leading-tight tracking-tight sm:text-5xl">{post.title}</h1>
+          
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-[1180px] px-4 pb-16 sm:px-6 lg:px-8">
+        <div className="-mt-10 grid overflow-hidden rounded-xl border border-[#12156f22] bg-white shadow-[0_24px_70px_rgba(18,21,111,0.10)] sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            ['Location', address || 'Service area available', MapPin],
+            ['Price', price, BadgeCheck],
+            ['Service Type', category, Building2],
+            ['Categories', post.tags?.join(', ') || category, Tag],
+            ['Hours', hours, Globe2],
+            ['Contact', phone || email || website || 'Use quick actions', Phone],
+          ].map(([label, value, Icon]) => (
+            <div key={String(label)} className="border-b border-r border-[#12156f18] p-6 last:border-r-0">
+              <div className="flex items-center gap-4">
+                <Icon className="h-7 w-7 text-[#12156f]" />
+                <div>
+                  <p className="text-sm font-black">{String(label)}:</p>
+                  <p className="mt-1 break-words text-sm text-[#545b70]">{String(value)}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-12 grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px]">
+          <article className="min-w-0">
+           
+            <BodyContent post={post} />
+            <ImageStrip images={images.slice(1)} label="Business photos" />
+            {mapSrc ? <div className="mt-10"><MapBox src={mapSrc} label={address || post.title} /></div> : null}
+          </article>
+
+          <aside className="space-y-6">
+            <a href={applyHref} target={applyHref.startsWith('http') ? '_blank' : undefined} rel={applyHref.startsWith('http') ? 'noreferrer' : undefined} className="inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-[#ffb52e] text-lg font-black text-[#111111]">
+              Contact Now <Send className="h-5 w-5" />
+            </a>
+            <div className="rounded-xl border border-[#12156f22] bg-[#f3f0fa] p-6 text-center">
+              <div className="mx-auto flex h-20 w-20 items-center justify-center overflow-hidden rounded-xl bg-white ring-1 ring-[#12156f18]">
+                {logo ? <img src={logo} alt="" className="h-full w-full object-cover" /> : <Building2 className="h-9 w-9 opacity-45" />}
+              </div>
+              <p className="mt-4 inline-flex items-center justify-center gap-1 text-sm text-[#545b70]"><MapPin className="h-4 w-4" /> {address || 'Location available on request'}</p>
+              <h2 className="mt-2 text-xl font-black">{post.title}</h2>
+              <div className="mt-3 flex justify-center gap-1 text-[#ffb52e]">
+                {[0, 1, 2, 3].map((item) => <span key={item}>★</span>)}<span className="text-[#6f7688]">★</span>
+              </div>
             </div>
             <div>
-              <p className="text-xs font-black uppercase tracking-[0.28em] text-[var(--detail-accent)]">Business listing</p>
-              <h1 className="mt-3 text-4xl font-black leading-[0.98] tracking-[-0.07em] sm:text-6xl">{post.title}</h1>
-              <p className="mt-5 max-w-3xl text-base leading-8 opacity-70">{summaryText(post)}</p>
+              <h3 className="mb-3 text-lg font-black">Location</h3>
+              <a href={directionsHref} target="_blank" rel="noreferrer" className="inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-[#ffb52e] text-lg font-black text-[#111111]">
+                Get Direction <Navigation className="h-5 w-5" />
+              </a>
             </div>
-          </div>
-          <InfoGrid items={[['Location', address, MapPin], ['Phone', phone, Phone], ['Email', email, Mail], ['Website', website, Globe2]]} />
-          <BodyContent post={post} />
-          <ImageStrip images={images.slice(1)} label="Business showcase" />
-        </article>
-        <aside className="space-y-5">
-          {mapSrc ? <MapBox src={mapSrc} label={address || post.title} /> : <ContactAction website={website} phone={phone} email={email} />}
-          {mapSrc ? <ContactAction website={website} phone={phone} email={email} /> : null}
-          <RelatedPanel task="listing" post={post} related={related} compact />
-        </aside>
+            <ContactAction website={website} phone={phone} email={email} />
+            <RelatedPanel task="listing" post={post} related={related} compact />
+          </aside>
+        </div>
       </div>
     </section>
   )
@@ -385,7 +434,6 @@ function RelatedPanel({ task, post, related, compact = false }: { task: TaskKey;
           <div className="mt-4 grid gap-3 text-sm font-bold opacity-75">
             <p className="inline-flex items-center gap-2"><Tag className="h-4 w-4" /> Task: {taskConfig?.label || task}</p>
             <p className="inline-flex items-center gap-2"><CheckCircle2 className="h-4 w-4" /> Site: {SITE_CONFIG.name}</p>
-            {post.publishedAt ? <p>Published: {new Date(post.publishedAt).toLocaleDateString()}</p> : null}
           </div>
         </div>
       ) : null}
