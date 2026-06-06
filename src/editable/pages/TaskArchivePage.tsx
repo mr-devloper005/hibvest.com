@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import type { CSSProperties } from 'react'
-import { ArrowRight, Bookmark, BriefcaseBusiness, Building2, Camera, Download, FileText, Filter, Image as ImageIcon, MapPin, Megaphone, Search, UserRound } from 'lucide-react'
+import { ArrowRight, Bookmark, BriefcaseBusiness, Building2, Camera, Download, FileText, Filter, Grid2X2, Image as ImageIcon, List, MapPin, Megaphone, Search, UserRound } from 'lucide-react'
 import { buildTaskMetadata } from '@/lib/seo'
 import { CATEGORY_OPTIONS, normalizeCategory } from '@/lib/categories'
 import { fetchPaginatedTaskPosts, buildPostUrl } from '@/lib/task-data'
@@ -82,6 +82,8 @@ export async function EditableTaskArchiveRoute({
 }
 
 export function TaskArchiveView({ task, posts, pagination, category, basePath }: { task: TaskKey; posts: SitePost[]; pagination: SiteFeedPagination; category: string; basePath: string }) {
+  if (task === 'listing') return <BusinessListingArchiveView posts={posts} pagination={pagination} category={category} basePath={basePath} />
+
   const taskConfig = getTaskConfig(task)
   const voice = taskPageVoices[task]
   const preset = getVisualPreset(visualSystem.recommendedPreset as any)
@@ -142,6 +144,89 @@ export function TaskArchiveView({ task, posts, pagination, category, basePath }:
   )
 }
 
+function BusinessListingArchiveView({ posts, pagination, category, basePath }: { posts: SitePost[]; pagination: SiteFeedPagination; category: string; basePath: string }) {
+  const page = pagination.page || 1
+  const categoryLabel = category === 'all' ? 'All categories' : CATEGORY_OPTIONS.find((item) => item.slug === category)?.name || category
+
+  return (
+    <EditableSiteShell>
+      <main className="bg-white text-[#12156f]">
+        <section className="bg-[#12156f] text-white">
+          <div className="mx-auto max-w-[1180px] px-4 py-16 text-center sm:px-6 lg:px-8">
+            <p className="text-xs font-black uppercase tracking-[0.28em] text-[#ffb52e]">Business listing style</p>
+            <h1 className="mt-4 text-5xl font-light tracking-tight sm:text-6xl">Find Local Providers</h1>
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-white/75">Search useful service listings, compare business details, and open provider pages with direct contact actions.</p>
+          </div>
+        </section>
+
+        <section className="mx-auto grid max-w-[1180px] gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[330px_minmax(0,1fr)] lg:px-8">
+          <aside className="rounded-xl border border-[#12156f22] bg-white shadow-[0_18px_55px_rgba(18,21,111,0.08)] lg:sticky lg:top-28 lg:self-start">
+            <form action={basePath}>
+              <div className="border-b border-[#12156f18] p-6">
+                <h2 className="text-xl font-black">Find a Business</h2>
+                <label className="mt-5 flex items-center gap-3 rounded-xl border border-[#12156f18] px-4 py-3">
+                  <Search className="h-4 w-4 text-[#8b91a6]" />
+                  <input name="q" placeholder="Search keywords" className="min-w-0 flex-1 bg-transparent text-sm font-bold text-[#161a3f] outline-none placeholder:text-[#6f7688]" />
+                </label>
+                <button className="mt-4 h-12 w-full rounded-xl bg-[#ffb52e] text-sm font-black text-[#111111]" type="submit">Search Keywords</button>
+              </div>
+              <div className="border-b border-[#12156f18] p-6">
+                <h3 className="text-lg font-black">Location</h3>
+                <label className="mt-4 flex items-center gap-3 rounded-xl border border-[#12156f18] px-4 py-3">
+                  <MapPin className="h-4 w-4 text-[#8b91a6]" />
+                  <input name="location" placeholder="Enter location" className="min-w-0 flex-1 bg-transparent text-sm font-bold text-[#161a3f] outline-none placeholder:text-[#6f7688]" />
+                </label>
+                
+                <div className="mt-3 h-1 rounded-full bg-[#e8ecf4]"><div className="h-1 w-2/3 rounded-full bg-[#ffb52e]" /></div>
+              </div>
+              <div className="p-6">
+                <h3 className="text-lg font-black">Category</h3>
+                <select name="category" defaultValue={category} className="mt-4 h-12 w-full rounded-xl border border-[#12156f18] bg-white px-4 text-sm font-bold text-[#161a3f] outline-none">
+                  <option value="all">All categories</option>
+                  {CATEGORY_OPTIONS.map((item) => <option key={item.slug} value={item.slug}>{item.name}</option>)}
+                </select>
+                <button className="mt-4 h-12 w-full rounded-xl bg-[#12156f] text-sm font-black text-white">Apply Filters</button>
+                <p className="mt-4 text-xs font-black uppercase tracking-[0.18em] text-[#6f7688]">Showing: {categoryLabel}</p>
+              </div>
+            </form>
+          </aside>
+
+          <div>
+            <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <p className="text-sm font-black text-[#ffb52e]">({pagination.total || posts.length}) Business Listings</p>
+                <h2 className="mt-1 text-3xl font-black tracking-tight">Available providers</h2>
+              </div>
+              <Link href="/create" className="inline-flex items-center gap-2 rounded-xl bg-[#ffb52e] px-5 py-3 text-sm font-black text-[#111111]">
+                Add a listing <ArrowRight className="h-4 w-4" />
+              </Link>
+              
+            </div>
+
+            {posts.length ? (
+              <div className="grid gap-5">
+                {posts.map((post) => <ListingArchiveCard key={post.id || post.slug} post={post} href={`${basePath}/${post.slug}`} />)}
+              </div>
+            ) : (
+              <div className="rounded-xl border border-dashed border-[#12156f30] bg-[#f7f8fc] p-10 text-center">
+                <Search className="mx-auto h-8 w-8 opacity-45" />
+                <h2 className="mt-4 text-3xl font-black tracking-tight">No business listings found</h2>
+                <p className="mt-2 text-sm text-[#545b70]">Try another category or add a new provider listing.</p>
+              </div>
+            )}
+
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+              {pagination.hasPrevPage ? <Link href={pageHref(basePath, category, page - 1)} className="rounded-xl border border-[#12156f18] bg-white px-5 py-3 text-sm font-black">Previous</Link> : null}
+              <span className="rounded-xl bg-[#12156f] px-5 py-3 text-sm font-black text-white">Page {page} of {pagination.totalPages || 1}</span>
+              {pagination.hasNextPage ? <Link href={pageHref(basePath, category, page + 1)} className="rounded-xl border border-[#12156f18] bg-white px-5 py-3 text-sm font-black">Next</Link> : null}
+            </div>
+          </div>
+        </section>
+      </main>
+    </EditableSiteShell>
+  )
+}
+
 function ArchivePostCard({ post, task, basePath, index }: { post: SitePost; task: TaskKey; basePath: string; index: number }) {
   const href = `${basePath}/${post.slug}` || buildPostUrl(task, post.slug)
   if (task === 'listing') return <ListingArchiveCard post={post} href={href} />
@@ -177,18 +262,19 @@ function ListingArchiveCard({ post, href }: { post: SitePost; href: string }) {
   const phone = getField(post, ['phone', 'telephone', 'mobile'])
   const website = getField(post, ['website', 'url'])
   return (
-    <Link href={href} className="group grid gap-5 rounded-[2rem] border border-[var(--editable-border)] bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-xl sm:grid-cols-[120px_1fr]">
-      <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-[1.5rem] bg-[var(--archive-bg)] ring-1 ring-[var(--editable-border)]">
+    <Link href={href} className="group grid gap-5 rounded-xl border border-[#12156f22] bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-xl sm:grid-cols-[92px_1fr]">
+      <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-xl bg-[#f7f8fc] ring-1 ring-[#12156f18]">
         {logo ? <img src={logo} alt="" className="h-full w-full object-cover" /> : <BriefcaseBusiness className="h-10 w-10 opacity-45" />}
       </div>
       <div className="min-w-0">
-        <div className="flex flex-wrap gap-2">
-          <span className="rounded-full bg-[var(--archive-text)] px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-[var(--archive-bg)]">Directory</span>
-          {location ? <span className="inline-flex items-center gap-1 rounded-full border border-[var(--editable-border)] px-3 py-1 text-[10px] font-black uppercase tracking-[0.14em]"><MapPin className="h-3 w-3" /> {location}</span> : null}
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-2xl font-black leading-tight tracking-tight text-[#12156f]">{post.title}</h2>
+          <span className="rounded-lg bg-[#eaf9ff] px-3 py-1 text-xs font-black uppercase text-[#43bde8]">Verified</span>
         </div>
-        <h2 className="mt-4 text-2xl font-black leading-tight tracking-[-0.05em]">{post.title}</h2>
-        <p className="mt-3 line-clamp-2 text-sm leading-6 opacity-65">{getSummary(post)}</p>
-        <div className="mt-4 grid gap-2 text-xs font-bold opacity-70 sm:grid-cols-2">
+        <p className="mt-2 text-sm font-bold text-[#8a8f9f]">Provider listing</p>
+        <p className="mt-3 line-clamp-2 text-sm leading-6 text-[#545b70]">{getSummary(post)}</p>
+        <div className="mt-4 grid gap-2 text-sm font-bold text-[#545b70] sm:grid-cols-3">
+          {location ? <span className="inline-flex items-center gap-2"><MapPin className="h-4 w-4" /> {location}</span> : null}
           {phone ? <span>Phone: {phone}</span> : null}
           {website ? <span>Website available</span> : null}
         </div>

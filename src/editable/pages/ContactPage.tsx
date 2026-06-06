@@ -75,26 +75,26 @@ export default function ContactPage() {
             ]
 
   return (
-    <EditableSiteShell className={tone.shell}>
-      <main className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+    <EditableSiteShell className="bg-[#f7f8fc] text-[#12156f]">
+      <main className="mx-auto max-w-[1180px] px-4 py-14 sm:px-6 lg:px-8">
         <section className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] opacity-70">{pagesContent.contact.eyebrow}</p>
-            <h1 className="mt-4 text-5xl font-semibold tracking-[-0.05em]">{pagesContent.contact.title}</h1>
-            <p className={`mt-5 max-w-2xl text-sm leading-8 ${tone.muted}`}>{pagesContent.contact.description}</p>
+            <p className="text-xs font-black uppercase tracking-[0.24em] text-[#ffb52e]">{pagesContent.contact.eyebrow}</p>
+            <h1 className="mt-4 text-5xl font-black tracking-tight">{pagesContent.contact.title}</h1>
+            <p className="mt-5 max-w-2xl text-sm leading-8 text-[#545b70]">{pagesContent.contact.description}</p>
             <div className="mt-8 space-y-4">
               {lanes.map((lane) => (
-                <div key={lane.title} className={`rounded-[1.6rem] p-5 ${tone.soft}`}>
-                  <lane.icon className="h-5 w-5" />
-                  <h2 className="mt-3 text-xl font-semibold">{lane.title}</h2>
-                  <p className={`mt-2 text-sm leading-7 ${tone.muted}`}>{lane.body}</p>
+                <div key={lane.title} className="rounded-xl border border-[#12156f22] bg-white p-5">
+                  <lane.icon className="h-5 w-5 text-[#ffb52e]" />
+                  <h2 className="mt-3 text-xl font-black">{lane.title}</h2>
+                  <p className="mt-2 text-sm leading-7 text-[#545b70]">{lane.body}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className={`rounded-[2rem] p-7 ${tone.panel}`}>
-            <h2 className="text-2xl font-semibold">{pagesContent.contact.formTitle}</h2>
+          <div className="rounded-xl border border-[#12156f22] bg-white p-7">
+            <h2 className="text-2xl font-black">{pagesContent.contact.formTitle}</h2>
             <EditableContactLeadForm />
           </div>
         </section>
