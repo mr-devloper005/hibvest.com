@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import type { CSSProperties } from 'react'
-import { ArrowUpRight, Mail, MapPin, Phone } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 import { SITE_CONFIG } from '@/lib/site-config'
 import { globalContent } from '@/editable/content/global.content'
 import { useEditableLocalAuthSession } from '@/editable/components/EditableLocalAuthForms'
@@ -42,9 +42,7 @@ export function EditableFooter() {
         <div className="grid gap-10 lg:grid-cols-[1.25fr_1fr_1fr_1fr]">
           <div>
             <Link href="/" className="inline-flex items-center gap-3">
-              <span className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl border border-[var(--editable-border)] bg-white">
-                <img src="/favicon.png?v=20260413" alt={SITE_CONFIG.name} className="h-9 w-9 object-contain" />
-              </span>
+              <img src="/favicon.png?v=20260413" alt={SITE_CONFIG.name} className="h-9 w-9 object-contain" />
               <span>
                 <span className="block text-lg font-black uppercase leading-none tracking-[0.08em]">{SITE_CONFIG.name}</span>
                 <span className="mt-1 block text-[11px] font-bold uppercase tracking-[0.32em] text-[#ffb52e]">{globalContent.footer.tagline}</span>
