@@ -135,7 +135,7 @@ export const visualSystem = {
   typography: {
     eyebrow: 'text-xs font-semibold uppercase tracking-[0.24em]',
     heroTitle: 'text-5xl font-semibold tracking-tight sm:text-6xl lg:text-7xl',
-    sectionTitle: 'text-3xl font-semibold tracking-[-0.04em] sm:text-4xl',
+    sectionTitle: 'text-3xl font-semibold tracking-tight sm:text-4xl',
     body: 'text-base leading-8',
     caption: 'text-xs font-medium uppercase tracking-[0.18em]',
   },

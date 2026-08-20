@@ -30,7 +30,7 @@ const getImage = (post: SitePost) => {
   return media || compactRaw(content.featuredImage) || compactRaw(content.image) || compactRaw(content.thumbnail) || images || ''
 }
 const compactRaw = (value: unknown) => typeof value === 'string' ? value.trim() : ''
-const summaryOf = (post: SitePost) => post.summary || compactRaw(getContent(post).description) || compactRaw(getContent(post).excerpt) || ''
+const summaryOf = (post: SitePost) => stripHtml(post.summary || compactRaw(getContent(post).description) || compactRaw(getContent(post).excerpt) || '')
 
 const matches = (post: SitePost, query: string, category: string, task: string) => {
   const content = getContent(post)
@@ -55,7 +55,7 @@ function SearchResultCard({ post, index }: { post: SitePost; index: number }) {
   const strong = index % 5 === 0
 
   return (
-    <Link href={href} className={`group block overflow-hidden rounded-[2rem] border border-[var(--editable-border)] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-2xl ${strong ? 'md:col-span-2' : ''}`}>
+    <Link href={href} className={`group block overflow-hidden rounded-xl border border-[var(--editable-border)] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-2xl ${strong ? 'md:col-span-2' : ''}`}>
       {image ? (
         <div className={`relative overflow-hidden bg-black ${strong ? 'aspect-[16/7]' : 'aspect-[16/10]'}`}>
           <img src={image} alt="" className="h-full w-full object-cover opacity-90 transition duration-500 group-hover:scale-105" />
@@ -65,7 +65,7 @@ function SearchResultCard({ post, index }: { post: SitePost; index: number }) {
       ) : null}
       <div className="p-5 sm:p-6">
         {!image ? <span className="rounded-full bg-[var(--editable-page-text,#211713)] px-3 py-1 text-[11px] font-black uppercase tracking-[0.18em] text-white">{taskLabel}</span> : null}
-        <h2 className="mt-4 line-clamp-3 text-2xl font-black leading-[0.95] tracking-[-0.06em] text-[var(--editable-page-text,#211713)]">{post.title}</h2>
+        <h2 className="mt-4 line-clamp-3 text-2xl font-black leading-tight tracking-tight text-[var(--editable-page-text,#211713)]">{post.title}</h2>
         {summary ? <p className="mt-4 line-clamp-3 text-sm font-semibold leading-7 text-[var(--editable-page-text,#211713)]/65">{summary}</p> : null}
         <span className="mt-5 inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.18em] opacity-60 group-hover:opacity-100">Open result <ArrowRight className="h-4 w-4" /></span>
       </div>
@@ -118,7 +118,7 @@ export default async function SearchPage({ searchParams }: { searchParams?: Prom
           <div className="mt-10 flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.24em] opacity-50">{results.length} results</p>
-              <h2 className="mt-2 text-3xl font-black tracking-[-0.06em]">{query ? `Results for “${query}”` : pagesContent.search.resultsTitle}</h2>
+              <h2 className="mt-2 text-3xl font-black tracking-tight">{query ? `Results for “${query}”` : pagesContent.search.resultsTitle}</h2>
             </div>
             <Link href="/listing" className="inline-flex items-center gap-2 rounded-xl border border-[#12156f22] bg-white px-5 py-3 text-sm font-black">Browse listings <ArrowRight className="h-4 w-4" /></Link>
           </div>
@@ -128,8 +128,8 @@ export default async function SearchPage({ searchParams }: { searchParams?: Prom
               {results.map((post, index) => <SearchResultCard key={post.id || post.slug} post={post} index={index} />)}
             </div>
           ) : (
-            <div className="mt-8 rounded-[2rem] border border-dashed border-[var(--editable-border)] bg-white/70 p-10 text-center">
-              <p className="text-2xl font-black tracking-[-0.04em]">No matching posts found.</p>
+            <div className="mt-8 rounded-xl border border-dashed border-[var(--editable-border)] bg-white/70 p-10 text-center">
+              <p className="text-2xl font-black tracking-tight">No matching posts found.</p>
               <p className="mt-3 text-sm font-semibold opacity-60">Try a different keyword, task type, or category.</p>
             </div>
           )}
