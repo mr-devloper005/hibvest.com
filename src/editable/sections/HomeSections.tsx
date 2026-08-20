@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowRight, BadgeCheck, Building2, Car, CircleDollarSign, Heart, MapPin, Plug, Search, Sparkles, Star, Store, UsersRound } from 'lucide-react'
+import { ArrowRight, BadgeCheck, Building2, Car, CircleDollarSign, Heart, Plug, Search, Sparkles, Star, Store, UsersRound } from 'lucide-react'
 import type { SitePost } from '@/lib/site-connector'
 import type { HomeTimeSection } from '@/lib/task-data'
 import type { TaskKey } from '@/lib/site-config'
